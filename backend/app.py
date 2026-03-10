@@ -21,7 +21,7 @@ from schemas import BatchOrderCreate
 @app.on_event("startup")
 def startup():
     Base.metadata.create_all(bind=engine)
-AI_ENGINE_URL = "http://192.168.1.10/queue/snapshot"
+AI_ENGINE_URL = "http://192.168.1.10:9000/queue/snapshot"
 
 def get_live_queue_data_for_canteen(canteen_id: int):
     try:
