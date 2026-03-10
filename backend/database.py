@@ -1,11 +1,12 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-DATABASE_URL = "postgresql+psycopg2://postgres:Sameesultan333@localhost:5432/smart_canteen"
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine = create_engine(
     DATABASE_URL,
-    echo=True  # shows SQL logs (helps debugging)
+    echo=True
 )
 
 SessionLocal = sessionmaker(
