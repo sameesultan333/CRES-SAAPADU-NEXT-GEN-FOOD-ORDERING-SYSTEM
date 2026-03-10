@@ -18,6 +18,8 @@ import asyncio
 from schemas import BatchOrderCreate
 # Ensure metadata is loaded (safe even if tables exist)
 
+app = FastAPI()
+
 @app.on_event("startup")
 def startup():
     Base.metadata.create_all(bind=engine)
@@ -78,7 +80,7 @@ def recalculate_eta(db: Session, canteen_id: int):
 
     return updated_etas
 
-app = FastAPI()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],   # 🔥 Dev mode universal
@@ -126,13 +128,14 @@ class OrderStatusUpdate(BaseModel):
     status: str   
 
 @app.post("/internal/queue-update")
-async def queue_update(data: dict = Body(...)):
+async def queue_update(
+    data: dict = Body(...),
+    db: Session = Depends(get_db)
+):
 
     canteen_id = data["canteen_id"]
     queue_count = data["queue_count"]
     avg_sec = data["average_service_seconds"]
-
-    db: Session = Depends(get_db)
 
     ready_orders = db.query(Order).filter(
         Order.canteen_id == canteen_id,
@@ -873,12 +876,11 @@ def get_user_active_orders(user_id: int, db: Session = Depends(get_db)):
         .all()
     )
 
-    queue_data = get_live_queue_data_for_canteen(order.canteen_id)
-    avg_service_time = queue_data.get("average_service_seconds", 20)
-
     result = []
 
     for order in orders:
+        queue_data = get_live_queue_data_for_canteen(order.canteen_id)
+        avg_service_time = queue_data.get("average_service_seconds", 20)
 
         orders_ahead = db.query(Order).filter(
             Order.canteen_id == order.canteen_id,
