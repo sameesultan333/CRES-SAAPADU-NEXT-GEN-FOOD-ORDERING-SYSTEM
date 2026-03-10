@@ -1063,3 +1063,8 @@ def clear_all_track_orders(db: Session = Depends(get_db)):
     db.commit()
 
     return {"message": "All track orders cleared"}
+
+
+@app.get("/queue/snapshot")
+def proxy_queue():
+    return get_live_queue_data_for_canteen(1)
