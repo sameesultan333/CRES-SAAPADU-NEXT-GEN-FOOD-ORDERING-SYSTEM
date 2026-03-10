@@ -21,7 +21,7 @@ from schemas import BatchOrderCreate
 @app.on_event("startup")
 def startup():
     Base.metadata.create_all(bind=engine)
-AI_ENGINE_URL = "https://johnette-unmethodising-junita.ngrok-free.dev/"
+AI_ENGINE_URL = "https://johnette-unmethodising-junita.ngrok-free.dev/queue/snapshot"
 
 def get_live_queue_data_for_canteen(canteen_id: int):
     try:
@@ -86,6 +86,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/queue/snapshot")
+def queue_snapshot():
+    return get_live_queue_data_for_canteen(1)
 
 
 
