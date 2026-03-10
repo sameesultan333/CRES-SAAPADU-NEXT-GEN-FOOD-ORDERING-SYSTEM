@@ -6,7 +6,8 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine = create_engine(
     DATABASE_URL,
-    echo=True
+    echo=True,
+    connect_args={"sslmode": "require"}  # required for Render PostgreSQL
 )
 
 SessionLocal = sessionmaker(
