@@ -17,7 +17,10 @@ import time
 import asyncio
 from schemas import BatchOrderCreate
 # Ensure metadata is loaded (safe even if tables exist)
-Base.metadata.create_all(bind=engine)
+
+@app.on_event("startup")
+def startup():
+    Base.metadata.create_all(bind=engine)
 AI_ENGINE_URL = "http://192.168.1.10/queue/snapshot"
 
 def get_live_queue_data_for_canteen(canteen_id: int):
