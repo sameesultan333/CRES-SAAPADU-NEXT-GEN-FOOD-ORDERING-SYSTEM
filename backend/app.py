@@ -128,7 +128,7 @@ async def queue_update(data: dict = Body(...)):
     queue_count = data["queue_count"]
     avg_sec = data["average_service_seconds"]
 
-    db = next(get_db())
+    db: Session = Depends(get_db)
 
     ready_orders = db.query(Order).filter(
         Order.canteen_id == canteen_id,
@@ -472,7 +472,7 @@ async def websocket_endpoint(websocket: WebSocket, canteen_id: int):
 
     try:
         while True:
-            await asyncio.sleep(1000)  # keep connection alive
+            await websocket.receive_text()
     except WebSocketDisconnect:
         manager.disconnect(canteen_id, websocket)
 @app.get("/orders/canteen/{canteen_id}")
@@ -869,7 +869,7 @@ def get_user_active_orders(user_id: int, db: Session = Depends(get_db)):
         .all()
     )
 
-    queue_data = get_live_queue_data()
+    queue_data = get_live_queue_data_for_canteen(order.canteen_id)
     avg_service_time = queue_data.get("average_service_seconds", 20)
 
     result = []
