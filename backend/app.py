@@ -23,7 +23,7 @@ app = FastAPI()
 @app.on_event("startup")
 def startup():
     Base.metadata.create_all(bind=engine)
-AI_ENGINE_URL = "https://induced-targets-generators-interested.trycloudflare.com/queue/snapshot"
+AI_ENGINE_URL = "https://maiden-serve-increase-stick.trycloudflare.com/queue/snapshot"
 
 def get_live_queue_data_for_canteen(canteen_id: int):
     try:
